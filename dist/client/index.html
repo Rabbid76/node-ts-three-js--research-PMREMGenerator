@@ -12,10 +12,33 @@
                 margin: 0px;
                 padding: 0px;
             }
+            #menu-area {
+                position: absolute;
+                bottom: 20px;
+                left: 10px;
+            } 
+            #menu-button-loss-left {
+                left: 10px;
+            } 
+            #menu-button-restore-left {
+                left: 10px;
+            } 
+            #menu-button-loss-right {
+                left: 10px;
+            } 
+            #menu-button-restore-right {
+                left: 10px;
+            } 
         </style>    
     </head>
 
     <body>
+        <div id="menu-area">
+            <button id="menu-button-loss-left" type="button">forceContextLoss left</button>
+            <button id="menu-button-restore-left" type="button">forceContextRestore left</button>
+            <button id="menu-button-loss-right" type="button">forceContextLoss right</button>
+            <button id="menu-button-restore-right" type="button">forceContextRestore right</button>
+        </div>
         <div id="container">
             <canvas id="three_canvas_left"> </canvas>
             <canvas id="three_canvas_right"> </canvas>

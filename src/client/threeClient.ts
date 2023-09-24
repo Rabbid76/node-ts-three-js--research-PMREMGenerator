@@ -77,7 +77,7 @@ const createScene = (): Scene => {
 }
 
 
-export const createRenderer = (canvas: any, scene: Scene) => {
+export const createRenderer = (canvas: any, contextLossId: string, contextRestoreId: string, scene: Scene) => {
     const renderer = new WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
     const width = window.innerWidth / 2;
     const height = window.innerHeight;
@@ -87,6 +87,34 @@ export const createRenderer = (canvas: any, scene: Scene) => {
     renderer.shadowMap.type = PCFSoftShadowMap;
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
+
+    const contextLossButton = document.getElementById(contextLossId);
+    if (contextLossButton) {
+        contextLossButton.onclick = () => { 
+            console.log('context loss clicked');
+            renderer.forceContextLoss();
+        };
+    };
+    const contextRestoreButton = document.getElementById(contextRestoreId);
+    if (contextRestoreButton) {
+        contextRestoreButton.onclick = () => { 
+            console.log('context restore clicked');
+            renderer.forceContextRestore();
+        };
+    };
+    renderer.domElement.addEventListener("webglcontextlost", function(event) {
+        console.log('webglcontextlost');
+    });
+    renderer.domElement.addEventListener("webglcontextrestored", function(event) {
+        console.log('webglcontextrestored');
+        // @ts-ignore
+        const userData = renderer.userData;
+        if (userData?.environmentTexture) {
+            const environmentTexture = userData.environmentTexture;
+            userData.environmentTexture = undefined;
+            environmentTexture.dispose();
+        }
+    });
     
     const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.y = 4;
@@ -121,6 +149,6 @@ export const createRenderer = (canvas: any, scene: Scene) => {
 
 const scene = createScene();
 // @ts-ignore
-createRenderer(three_canvas_left, scene);
+createRenderer(three_canvas_left, 'menu-button-loss-left', 'menu-button-restore-left', scene);
 // @ts-ignore
-createRenderer(three_canvas_right, scene);
+createRenderer(three_canvas_right, 'menu-button-loss-right', 'menu-button-restore-right', scene);
