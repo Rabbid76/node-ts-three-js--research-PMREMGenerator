@@ -3,21 +3,22 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>three.js example</title>
+        <title>Use environment maps generated with PMREMGenerator on multiple canvase</title>
         <style>
             body {
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            margin: 0px;
-            padding: 0px;
-        }
-        </style>
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                padding: 0px;
+            }
+        </style>    
     </head>
 
     <body>
         <div id="container">
-            <canvas id="three_canvas"> </canvas>
+            <canvas id="three_canvas_left"> </canvas>
+            <canvas id="three_canvas_right"> </canvas>
         </div>
         <script type="module" src="bundle.js"></script>
     </body>

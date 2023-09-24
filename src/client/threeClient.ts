@@ -24,20 +24,19 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import Stats from 'three/examples/jsm/libs/stats.module' 
 import { GUI } from 'dat.gui'
 
-export const helloCube = (canvas: any) => {
+
+export const createRenderer = (canvas: any) => {
     const renderer = new WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const width = window.innerWidth / 2;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
     document.body.appendChild(renderer.domElement);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.outputEncoding = LinearEncoding;
-    //renderer.toneMapping = NoToneMapping;
-    //renderer.outputEncoding = sRGBEncoding;
-    renderer.toneMapping = ACESFilmicToneMapping;
-
-    const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.y = 4;
     camera.position.z = 8;
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -56,18 +55,6 @@ export const helloCube = (canvas: any) => {
     scene.add(gridHelper);
     const axesHelper = new AxesHelper(2);
     scene.add(axesHelper);
-
-    const directionalLight = new DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(1, 3, 1);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
-    const lightTransformControl = new TransformControls(camera, renderer.domElement);
-    lightTransformControl.addEventListener( 'dragging-changed', (event: any) => {
-        controls.enabled = !event.value;
-    });
-    lightTransformControl.attach(directionalLight);
-    lightTransformControl.visible = false;
-    scene.add(lightTransformControl);
     
     const groundGeometry = new PlaneGeometry(10, 10);
     groundGeometry.rotateX(-Math.PI / 2);
@@ -91,19 +78,8 @@ export const helloCube = (canvas: any) => {
     meshTransformControl.visible = false;
     scene.add(meshTransformControl);
 
-    // @ts-ignore
-    const stats = new Stats();
-    document.body.appendChild(stats.dom);
-    const gui = new GUI();
-    const uiProperties = {
-        'mesh transform control': meshTransformControl.visible,
-        'light transform control': lightTransformControl.visible,
-    }
-    gui.add(uiProperties, 'mesh transform control').onChange((value: any) => meshTransformControl.visible = value);
-    gui.add(uiProperties, 'light transform control').onChange((value: any) => lightTransformControl.visible = value);
-
     window.addEventListener('resize', () => {
-        const width = window.innerWidth;
+        const width = window.innerWidth / 2;
         const height = window.innerHeight;
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
@@ -115,10 +91,8 @@ export const helloCube = (canvas: any) => {
         const deltaTimeMs = timestamp - (previousTimeStamp ?? timestamp);
         previousTimeStamp = timestamp;
         requestAnimationFrame(animate);
-        mesh.rotation.y += 45 * Math.PI / 180 * deltaTimeMs / 1000;
         controls.update();
         render();
-        stats.update()
     }
 
     const render = () => {
@@ -128,4 +102,6 @@ export const helloCube = (canvas: any) => {
 }
 
 // @ts-ignore
-helloCube(three_canvas);
+createRenderer(three_canvas_left);
+// @ts-ignore
+createRenderer(three_canvas_right);
