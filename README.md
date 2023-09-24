@@ -1,3 +1,5 @@
-# node-ts-three-js--hello-cube
+# node-ts-three-js--research-PMREMGenerator
 
-Node.js, TypeScript, Three.js Boilerplate
+[PMREMGenerator](https://threejs.org/docs/#api/en/extras/PMREMGenerator)
+
+Use environment maps generated with `PMREMGenerator` on multiple canvases.
