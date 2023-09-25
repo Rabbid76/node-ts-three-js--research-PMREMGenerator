@@ -24,6 +24,10 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import Stats from 'three/examples/jsm/libs/stats.module' 
 import { GUI } from 'dat.gui'
 
+interface WithUserData {
+    userData?: Record<string, any>;
+  }
+
 const createScene = (): Scene => {
     const scene = new Scene();
     scene.background = new Color(0xc0c0c0);
@@ -57,13 +61,10 @@ const createScene = (): Scene => {
         if (!scene.userData.roomEnvironment) {
             return;
         }
-        // @ts-ignore
-        if (!renderer.userData) {
-            // @ts-ignore
-            renderer.userData = {};
+        if (!(renderer as WithUserData).userData) {
+            (renderer as WithUserData).userData = {};
         }
-        // @ts-ignore
-        const rendererUserData: any = renderer.userData;
+        const rendererUserData = (renderer as WithUserData).userData as any;
         if (!rendererUserData.environmentTexture) {
             const pmremGenerator = new PMREMGenerator(renderer);
             const pmremRenderTarget = pmremGenerator.fromScene(roomEnvironment, 0.04);
@@ -102,16 +103,15 @@ export const createRenderer = (canvas: any, contextLossId: string, contextRestor
             renderer.forceContextRestore();
         };
     };
-    renderer.domElement.addEventListener("webglcontextlost", function(event) {
+    renderer.domElement.addEventListener('webglcontextlost', function(event) {
         console.log('webglcontextlost');
     });
     renderer.domElement.addEventListener("webglcontextrestored", function(event) {
         console.log('webglcontextrestored');
-        // @ts-ignore
-        const userData = renderer.userData;
-        if (userData?.environmentTexture) {
-            const environmentTexture = userData.environmentTexture;
-            userData.environmentTexture = undefined;
+        const rendererUserData = (renderer as WithUserData).userData;
+        if (rendererUserData?.environmentTexture) {
+            const environmentTexture = rendererUserData.environmentTexture;
+            rendererUserData.environmentTexture = undefined;
             environmentTexture.dispose();
         }
     });
